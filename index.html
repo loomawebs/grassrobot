@@ -82,6 +82,10 @@
         box-shadow: 0 8px 18px rgba(34, 197, 94, 0.18);
       }
 
+      .center-btn img {
+        width: 50px;
+      }
+
       /* controls row */
       .controls {
         display: flex;
@@ -107,7 +111,9 @@
         font-family: Afacad;
         font-size: 14px;
       }
-
+      .ctrl img {
+        width: 30px;
+      }
       .meta {
         margin-top: 16px;
         background: #f8fafc;
@@ -173,7 +179,9 @@
         gap: 4px;
         transition: 0.25s;
       }
-
+      .nav-btn img {
+        filter: invert(1);
+      }
       .nav-btn span {
         font-size: 14px;
         font-family: Afacad;
@@ -225,42 +233,51 @@
             ></circle>
           </svg>
           <!-- center button -->
-          <div
-            id="centerBtn"
-            class="center-btn"
-            aria-pressed="false"
-            title="Start/Stop"
-          >
-            ⏻
-          </div>
+          <div id="centerBtn" class="center-btn">
+  <img src="image (4).png" alt="Power" />
+</div>
           <!-- small rotating dot positioned on circumference -->
         </div>
       </div>
 
       <div class="controls">
-        <button class="ctrl" id="returnBtn">↩<span>REINICIAR</span></button>
-        <button class="ctrl" id="startBtn">▶<span>INICIAR</span></button>
-        <button class="ctrl" id="stopBtn">⏹<span>DETENER</span></button>
+        <button class="ctrl" id="returnBtn">
+  <img src="image (2).png" alt="Reiniciar" />
+  <span>REINICIAR</span>
+</button>
+
+<button class="ctrl" id="startBtn">
+  <img src="image (1).png" alt="Iniciar" />
+  <span>INICIAR</span>
+</button>
+
+<button class="ctrl" id="stopBtn">
+  <img src="image (3).png" alt="Detener" />
+  <span>DETENER</span>
+</button>
       </div>
 
       <div class="meta">
         <div style="display: flex; justify-content: space-between">
-          <div>Conectividad</div>
+          <div>Conectividad &MediumSpace;</div>
           <div style="color: #10b981">Wi‑Fi ✓ • Bluetooth ✓</div>
         </div>
         <div id="progressText" style="margin-top: 8px">Progreso: 0%</div>
       </div>
     </div>
 
-    <div class="bottom-nav">
-      <a href="configuracion.html" class="nav-btn">
-        ⚙️<span>Configuración</span>
-      </a>
+   <div class="bottom-nav">
+  <a href="configuracion.html" class="nav-btn">
+    <img src="image (6).png" alt="Configuración" width="28" height="28" />
+    <span>Configuración</span>
+  </a>
 
-      <a href="programacion.html" class="nav-btn">
-        📅<span>Programación</span>
-      </a>
-    </div>
+  <a href="programacion.html" class="nav-btn">
+    <img src="image (5).png" alt="Programación" width="28" height="28" />
+    <span>Programación</span>
+  </a>
+</div>
+
 
     <script>
       // Progress ring math
