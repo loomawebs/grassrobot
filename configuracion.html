@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grass Robot - Configuración</title>
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Afacad:wght@400;600;700&display=swap");
+
+    :root {
+      --accent: #22c55e;
+      --accent-dark: #16a34a;
+      --gray: #e5e7eb;
+      --soft-text: #6b7280;
+      --mode-eco: #23c55e;
+      --mode-rapid: #d1d5db;
+    }
+
+    body {
+      margin: 0;
+      background: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      font-family: Afacad, sans-serif;
+      color: #111827;
+    }
+
+    .device {
+      width: 100%;
+      height: 100vh;
+      background: #fff;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 8px 30px rgb(0 0 0 / 0.08);
+      border-radius: 26px;
+    }
+
+    .title {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+
+    /* --- SLIDER --- */
+    .section-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .slider-container {
+      width: 90%;
+      margin-bottom: 30px;
+    }
+
+    input[type="range"] {
+        appearance: unset;
+      -webkit-appearance: none;
+      width: 100%;
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 26px;
+      height: 26px;
+      background: #fff;
+      border: 4px solid var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    /* --- MODOS --- */
+    .modes {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .mode {
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-size: 18px;
+      border: 2px solid #d1d5db;
+      cursor: pointer;
+      transition: 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mode.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      box-shadow: 0px 4px 10px rgba(34, 197, 94, 0.3);
+    }
+
+    /* --- HISTORIAL --- */
+    .history {
+      width: 90%;
+      margin-top: 10px;
+    }
+
+    .history-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .check {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .btn-volver {
+  display: inline-block;
+  margin: 16px 0;
+  padding: 10px 16px;
+  background: #f3f4f6;
+  color: #374151;
+  font-family: Afacad;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: 0.25s;
+}
+
+.btn-volver:hover {
+  background: #e5e7eb;
+  color: var(--accent);
+}
+  </style>
+</head>
+
+<body>
+  <div class="device">
+
+    <div class="title">Configuración</div>
+
+    <!-- ALTURA DE CORTE -->
+    <div class="slider-container">
+      <div class="section-title">Altura de Corte</div>
+      <input type="range" id="cutHeight" min="1" max="5" value="3">
+    </div>
+
+    <!-- MODOS -->
+    <div class="modes">
+      <div id="rapidBtn" class="mode">⚡ Modo Rápido</div>
+      <div id="ecoBtn" class="mode active">🌿 Modo Eco</div>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div class="history">
+      <div class="history-title">Historial de Cortes</div>
+
+      <div class="history-item">
+        <span>Hoy: 2h 30m</span>
+        <span class="check">✓</span>
+      </div>
+
+      <div class="history-item">
+        <span>Ayer: 1h 45m</span>
+        <span class="check">✓</span>
+      </div>
+
+      <div class="history-item">
+        <span>Lunes: 3h 00m</span>
+        <span class="check">✓</span>
+      </div>
+    </div>
+<a href="index.html" class="btn-volver">Volver</a>
+  </div>
+
+  <script>
+    // Botones de modo
+    const rapidBtn = document.getElementById("rapidBtn");
+    const ecoBtn = document.getElementById("ecoBtn");
+
+    function selectMode(btn) {
+      rapidBtn.classList.remove("active");
+      ecoBtn.classList.remove("active");
+      btn.classList.add("active");
+    }
+
+    rapidBtn.addEventListener("click", () => selectMode(rapidBtn));
+    ecoBtn.addEventListener("click", () => selectMode(ecoBtn));
+  </script>
+
+</body>
+</html>

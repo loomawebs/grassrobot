@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grass Robot App</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&display=swap");
+      :root {
+        --bg: #ffffff;
+        --accent: #22c55e;
+        --accent-dark: #16a34a;
+        --soft-green: #d1fae5;
+        --light-blue: #0091e6;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Afacad, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+        background: #f3f4f6;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        color: #111827;
+      }
+      .device {
+        height: 100vh;
+        width: 100%;
+        background: var(--bg);
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 26px;
+        box-shadow: 0 8px 30px rgba(2, 6, 23, 0.08);
+        padding: 20px 18px 34px;
+      }
+      .title {
+        font-size: 42px;
+        text-align: center;
+        font-weight: 700;
+        margin: 6px 0;
+      }
+      .status {
+        font-size: 26px;
+        text-align: center;
+        color: var(--accent);
+        margin-bottom: 8px;
+        transition: 0.3s ease-in-out;
+      }
+
+      /* progress circle container */
+      .ring-wrap {
+        display: flex;
+        justify-content: center;
+        margin: 18px 0 8px;
+      }
+      .ring {
+        width: 200px;
+        height: 200px;
+        position: relative;
+        display: inline-block;
+      }
+      /* center button */
+      .center-btn {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--accent);
+        color: white;
+        font-size: 44px;
+        cursor: pointer;
+        box-shadow: 0 8px 18px rgba(34, 197, 94, 0.18);
+      }
+
+      /* controls row */
+      .controls {
+        display: flex;
+        gap: 18px;
+        justify-content: center;
+        margin-top: 18px;
+      }
+      .ctrl {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--light-blue);
+        border: none;
+        font-size: 32px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        cursor: pointer;
+      }
+      .ctrl span {
+        font-family: Afacad;
+        font-size: 14px;
+      }
+
+      .meta {
+        margin-top: 16px;
+        background: #f8fafc;
+        padding: 12px;
+        border-radius: 12px;
+        font-size: 14px;
+      }
+
+      /* SVG ring styles */
+      svg {
+        display: block;
+      }
+      .ring-bg {
+        stroke: #e6f6ea;
+        transition: 0.3s ease-in-out;
+      }
+      .ring-fg {
+        stroke: var(--accent);
+        transition: stroke-dashoffset 300ms linear, stroke 500ms linear;
+      }
+
+      /* estados */
+      .status.stopped {
+        color: #6b7280; /* gris */
+      }
+
+      .center-btn.stopped {
+        background: #9ca3af !important; /* gris */
+        box-shadow: none !important;
+      }
+
+      /* loader oculto */
+      .ring-fg.hidden {
+        stroke: #c5c5c5 !important;
+      }
+      .ring-bg.hidden {
+        stroke: #dddddd;
+      }
+
+      /* ===== BARRA INFERIOR ===== */
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 430px;
+        background: #ffffff;
+        padding: 12px 0 8px;
+        display: flex;
+        justify-content: space-around;
+        border-radius: 18px 18px 0 0;
+        box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      .nav-btn {
+        text-decoration: none;
+        color: #374151;
+        font-size: 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        transition: 0.25s;
+      }
+
+      .nav-btn span {
+        font-size: 14px;
+        font-family: Afacad;
+      }
+
+      .nav-btn:hover {
+        color: var(--accent);
+      }
+
+      /* small responsive tweaks */
+      @media (max-width: 400px) {
+        .device {
+          width: 320px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="device" role="application">
+      <div class="title">Grass Robot</div>
+      <div class="status" id="status">Detenido</div>
+
+      <div class="ring-wrap">
+        <!-- SVG progress ring (2 rings to create layered look) -->
+        <div class="ring" aria-hidden="true">
+          <svg width="200" height="200" viewBox="0 0 120 120">
+            <!-- outer subtle ring -->
+            <circle
+              class="ring-bg"
+              cx="60"
+              cy="60"
+              r="52"
+              stroke-width="8"
+              fill="none"
+            ></circle>
+            <!-- foreground progress ring -->
+            <circle
+              id="progressRing"
+              class="ring-fg"
+              cx="60"
+              cy="60"
+              r="52"
+              stroke-width="8"
+              fill="none"
+              stroke-linecap="round"
+              transform="rotate(-90 60 60)"
+              stroke-dasharray="326.7256"
+              stroke-dashoffset="326.7256"
+            ></circle>
+          </svg>
+          <!-- center button -->
+          <div
+            id="centerBtn"
+            class="center-btn"
+            aria-pressed="false"
+            title="Start/Stop"
+          >
+            ⏻
+          </div>
+          <!-- small rotating dot positioned on circumference -->
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="ctrl" id="returnBtn">↩<span>REINICIAR</span></button>
+        <button class="ctrl" id="startBtn">▶<span>INICIAR</span></button>
+        <button class="ctrl" id="stopBtn">⏹<span>DETENER</span></button>
+      </div>
+
+      <div class="meta">
+        <div style="display: flex; justify-content: space-between">
+          <div>Conectividad</div>
+          <div style="color: #10b981">Wi‑Fi ✓ • Bluetooth ✓</div>
+        </div>
+        <div id="progressText" style="margin-top: 8px">Progreso: 0%</div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <a href="configuracion.html" class="nav-btn">
+        ⚙️<span>Configuración</span>
+      </a>
+
+      <a href="programacion.html" class="nav-btn">
+        📅<span>Programación</span>
+      </a>
+    </div>
+
+    <script>
+      // Progress ring math
+      const ringBg = document.querySelector(".ring-bg");
+      const ring = document.getElementById("progressRing");
+      const R = 52; // radius used in SVG
+      const CIRC = 2 * Math.PI * R; // circumference
+      ring.style.strokeDasharray = CIRC;
+      ring.style.strokeDashoffset = CIRC;
+
+      const status = document.getElementById("status");
+      const centerBtn = document.getElementById("centerBtn");
+      const progressText = document.getElementById("progressText");
+
+      let progress = 0; // 0..100
+      let cutting = false;
+      let timer = null;
+
+      function setProgress(p) {
+        progress = Math.max(0, Math.min(100, p));
+        const offset = CIRC * (1 - progress / 100);
+        ring.style.strokeDashoffset = offset;
+        // rotate dot around the circle: angle from 0 to 360
+        const angle = (progress / 100) * 360;
+
+        progressText.textContent = `Progreso: ${Math.round(progress)}%`;
+
+        // color change when active
+        if (progress > 0) {
+          ring.style.stroke = "var(--accent)";
+        } else {
+          ring.style.stroke = "var(--accent)";
+        }
+      }
+
+      function startCut() {
+        if (cutting) return;
+        cutting = true;
+
+        status.textContent = "Cortando";
+        status.classList.remove("stopped");
+
+        centerBtn.classList.remove("stopped");
+        centerBtn.style.background = "var(--accent-dark)";
+
+        centerBtn.setAttribute("aria-pressed", "true");
+
+        // loader visible
+        ring.classList.remove("hidden");
+        ringBg.classList.remove("hidden");
+
+        timer = setInterval(() => {
+          setProgress(progress + 0.1);
+          if (progress >= 100) {
+            setTimeout(() => stopCut(), 400);
+          }
+        }, 80);
+      }
+
+      function stopCut() {
+        cutting = false;
+        status.textContent = "Detenido";
+
+        // aplicar estilos gris
+        status.classList.add("stopped");
+        centerBtn.classList.add("stopped");
+
+        // loader invisible
+        ring.classList.add("hidden");
+        ringBg.classList.add("hidden");
+
+        centerBtn.setAttribute("aria-pressed", "false");
+        clearInterval(timer);
+
+        // animación suave hasta 0
+        animateProgressTo(0, 400);
+      }
+
+      function toggleCut() {
+        if (cutting) stopCut();
+        else startCut();
+      }
+
+      // smooth animation helper
+      function animateProgressTo(target, duration) {
+        const start = progress;
+        const diff = target - start;
+        const startTime = performance.now();
+        return new Promise((resolve) => {
+          function frame(now) {
+            const t = Math.min(1, (now - startTime) / duration);
+            const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // pseudo-ease
+            setProgress(start + diff * ease);
+            if (t < 1) requestAnimationFrame(frame);
+            else resolve();
+          }
+          requestAnimationFrame(frame);
+        });
+      }
+
+      // Attach buttons
+      document.getElementById("startBtn").addEventListener("click", startCut);
+      document.getElementById("stopBtn").addEventListener("click", stopCut);
+      document.getElementById("returnBtn").addEventListener("click", () => {
+        // example: return -> do small rewind animation
+        animateProgressTo(Math.max(0, progress - 100), progress * 400);
+      });
+      centerBtn.addEventListener("click", toggleCut);
+
+      // initialize
+      setProgress(0);
+    </script>
+  </body>
+</html>
